@@ -296,6 +296,18 @@ pub(crate) async fn connect<R: Runtime>(
                 .unwrap();
             }
             info!("Websocket connection closed");
+            upsert_websocket_connection(
+                &window,
+                &WebsocketConnection {
+                    workspace_id: request.workspace_id.clone(),
+                    request_id: request_id.to_string(),
+                    state: WebsocketConnectionState::Closed,
+                    id: connection_id.clone(),
+                    ..Default::default()
+                },
+                &UpdateSource::Background,
+            ).await.unwrap();
+            
         });
     }
 
